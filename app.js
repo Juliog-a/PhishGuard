@@ -25,6 +25,27 @@ const CRITICAL_EXT = new Set(['exe', 'scr', 'js', 'jse', 'vbs', 'vbe', 'bat', 'c
 const HIGH_EXT = new Set(['iso', 'img', 'jar', 'chm', 'reg', 'wsf', 'wsh', 'xll']);
 const MEDIUM_EXT = new Set(['html', 'htm', 'shtml', 'docm', 'xlsm', 'pptm', 'zip', 'rar', '7z', 'gz']);
 
+
+const EXAMPLE_EMAILS = [
+  { file: '01_legitimate_internal_security_update.eml', en: 'Legitimate internal security update', es: 'Actualización interna legítima' },
+  { file: '02_legitimate_supplier_invoice_pdf.eml', en: 'Legitimate supplier invoice with PDF', es: 'Factura legítima de proveedor con PDF' },
+  { file: '03_marketing_newsletter_promotional.eml', en: 'Marketing newsletter', es: 'Newsletter promocional' },
+  { file: '04_spam_discount_offer_multiple_links.eml', en: 'Spam discount offer with multiple links', es: 'Spam promocional con varios enlaces' },
+  { file: '05_suspicious_invoice_replyto_mismatch.eml', en: 'Suspicious invoice with Reply-To mismatch', es: 'Factura sospechosa con Reply-To distinto' },
+  { file: '06_m365_credential_phishing_html.eml', en: 'Microsoft 365 credential phishing', es: 'Phishing de credenciales Microsoft 365' },
+  { file: '07_parcel_delivery_ip_based_url.eml', en: 'Parcel delivery with IP-based URL', es: 'Paquetería con URL basada en IP' },
+  { file: '08_bec_urgent_wire_transfer_no_url.eml', en: 'BEC wire transfer without URL', es: 'BEC de transferencia urgente sin URL' },
+  { file: '09_macro_enabled_invoice_attachment.eml', en: 'Macro-enabled invoice attachment', es: 'Factura con adjunto de macros' },
+  { file: '10_security_alert_punycode_homograph.eml', en: 'Punycode homograph security alert', es: 'Alerta con dominio punycode/homográfico' },
+];
+
+const THREAT_INTEL_LIMITS = {
+  domains: 8,
+  urls: 8,
+  ips: 8,
+  fileHashes: 8,
+};
+
 const UI_TEXT = {
   en: {
     'nav.analyzer': 'Analyzer',
@@ -33,7 +54,38 @@ const UI_TEXT = {
     'hero.title': 'Detect suspicious signals in emails before opening links or attachments.',
     'hero.copy': 'Upload an .eml file or paste email details manually. The analyzer extracts IOCs, checks sender-authentication evidence, scores phishing risk and generates a structured report.',
     'hero.start': 'Start analysis',
-    'hero.sample': 'Load sample',
+    'hero.sample': 'Load next sample',
+    'sample.label': 'Demo email examples',
+    'sample.loadSelected': 'Load selected',
+    'sample.loadNext': 'Load next',
+    'tab.intel': 'Threat intel',
+    'ti.settingsTitle': 'Online reputation verification',
+    'ti.settingsCopy': 'Optional: connect a Cloudflare Worker proxy to query VirusTotal without exposing your API key in the browser.',
+    'ti.workerUrl': 'Cloudflare Worker URL',
+    'ti.attachmentSamples': 'Optional attachment samples for hash reputation',
+    'ti.attachmentNote': 'Files are hashed locally. The app sends SHA-256 hashes only, not file contents.',
+    'ti.saveWorker': 'Save endpoint',
+    'ti.verifyButton': 'Verify IOCs online',
+    'ti.title': 'Online reputation verification',
+    'ti.copy': 'Queries domains, URLs, IPs and optional attachment hashes through your configured Worker.',
+    'ti.notRun': 'Online verification has not been run yet.',
+    'ti.noWorker': 'Add your Cloudflare Worker URL first. The local analyzer still works without online verification.',
+    'ti.saved': 'Endpoint saved.',
+    'ti.loading': 'Querying online reputation sources...',
+    'ti.noIndicators': 'No domains, URLs, IPs or file hashes available for online verification.',
+    'ti.error': 'Online verification failed: {message}',
+    'ti.complete': 'Online verification complete: {count} indicator(s) checked.',
+    'ti.type.domain': 'Domain',
+    'ti.type.url': 'URL',
+    'ti.type.ip': 'IP address',
+    'ti.type.file': 'File hash',
+    'ti.verdict.clean': 'clean',
+    'ti.verdict.suspicious': 'suspicious',
+    'ti.verdict.malicious': 'malicious',
+    'ti.verdict.unknown': 'unknown',
+    'ti.verdict.error': 'error',
+    'ti.stats': 'Malicious: {malicious} · Suspicious: {suspicious} · Harmless: {harmless} · Undetected: {undetected}',
+    'ti.openVt': 'Open in VirusTotal',
     'hero.noteStrong': 'Privacy note:',
     'hero.note': 'the analysis runs in your browser. Do not use real confidential emails in public demonstrations.',
     'metric.eml': 'email parsing',
@@ -84,6 +136,8 @@ const UI_TEXT = {
     'card.attach.copy': 'Highlights executable, script, macro-enabled and HTML attachments commonly abused in phishing.',
     'card.social.title': 'Social engineering',
     'card.social.copy': 'Scores urgency, credential-harvesting language, payment pressure and impersonation patterns.',
+    'card.intel.title': 'Online reputation',
+    'card.intel.copy': 'Optionally verifies domains, URLs, IPs and file hashes through VirusTotal using a serverless proxy.',
     'footer.left': 'PhishGuard AI — phishing email risk analyzer.',
     'footer.right': 'Use this tool as decision support, not as the only source for response decisions.',
     'ph.subject': 'Urgent: verify your account',
@@ -180,7 +234,38 @@ const UI_TEXT = {
     'hero.title': 'Detecta señales sospechosas en correos antes de abrir enlaces o adjuntos.',
     'hero.copy': 'Sube un archivo .eml o pega los datos del correo manualmente. El analizador extrae IOCs, revisa evidencias de autenticación del remitente, calcula el riesgo de phishing y genera un informe estructurado.',
     'hero.start': 'Empezar análisis',
-    'hero.sample': 'Cargar ejemplo',
+    'hero.sample': 'Cargar siguiente ejemplo',
+    'sample.label': 'Ejemplos de correos demo',
+    'sample.loadSelected': 'Cargar seleccionado',
+    'sample.loadNext': 'Cargar siguiente',
+    'tab.intel': 'Threat intel',
+    'ti.settingsTitle': 'Verificación online de reputación',
+    'ti.settingsCopy': 'Opcional: conecta un proxy Cloudflare Worker para consultar VirusTotal sin exponer tu API key en el navegador.',
+    'ti.workerUrl': 'URL del Cloudflare Worker',
+    'ti.attachmentSamples': 'Muestras de adjuntos opcionales para reputación por hash',
+    'ti.attachmentNote': 'Los archivos se hashean localmente. La app envía solo hashes SHA-256, no el contenido.',
+    'ti.saveWorker': 'Guardar endpoint',
+    'ti.verifyButton': 'Verificar IOCs online',
+    'ti.title': 'Verificación online de reputación',
+    'ti.copy': 'Consulta dominios, URLs, IPs y hashes opcionales de adjuntos mediante tu Worker configurado.',
+    'ti.notRun': 'La verificación online todavía no se ha ejecutado.',
+    'ti.noWorker': 'Añade primero la URL de tu Cloudflare Worker. El analizador local funciona igualmente sin verificación online.',
+    'ti.saved': 'Endpoint guardado.',
+    'ti.loading': 'Consultando fuentes online de reputación...',
+    'ti.noIndicators': 'No hay dominios, URLs, IPs o hashes disponibles para verificación online.',
+    'ti.error': 'La verificación online ha fallado: {message}',
+    'ti.complete': 'Verificación online completada: {count} indicador(es) comprobados.',
+    'ti.type.domain': 'Dominio',
+    'ti.type.url': 'URL',
+    'ti.type.ip': 'Dirección IP',
+    'ti.type.file': 'Hash de archivo',
+    'ti.verdict.clean': 'limpio',
+    'ti.verdict.suspicious': 'sospechoso',
+    'ti.verdict.malicious': 'malicioso',
+    'ti.verdict.unknown': 'desconocido',
+    'ti.verdict.error': 'error',
+    'ti.stats': 'Malicioso: {malicious} · Sospechoso: {suspicious} · Inofensivo: {harmless} · Sin detectar: {undetected}',
+    'ti.openVt': 'Abrir en VirusTotal',
     'hero.noteStrong': 'Nota de privacidad:',
     'hero.note': 'el análisis se ejecuta en tu navegador. No uses correos confidenciales reales en demostraciones públicas.',
     'metric.eml': 'lectura de email',
@@ -231,6 +316,8 @@ const UI_TEXT = {
     'card.attach.copy': 'Resalta adjuntos ejecutables, scripts, documentos con macros y HTML usados frecuentemente en phishing.',
     'card.social.title': 'Ingeniería social',
     'card.social.copy': 'Puntúa urgencia, robo de credenciales, presión de pago y patrones de suplantación.',
+    'card.intel.title': 'Reputación online',
+    'card.intel.copy': 'Verifica opcionalmente dominios, URLs, IPs y hashes de archivos mediante VirusTotal usando un proxy serverless.',
     'footer.left': 'PhishGuard AI — analizador de riesgo de phishing en email.',
     'footer.right': 'Usa esta herramienta como apoyo, no como única fuente para tomar decisiones de respuesta.',
     'ph.subject': 'Urgente: verifica tu cuenta',
@@ -327,6 +414,8 @@ const state = {
   lastResult: null,
   loadedFileName: '',
   lang: getInitialLanguage(),
+  exampleIndex: -1,
+  threatIntel: null,
 };
 
 const els = {
@@ -341,6 +430,16 @@ const els = {
   analyzeBtn: document.getElementById('analyzeBtn'),
   clearBtn: document.getElementById('clearBtn'),
   loadSampleBtn: document.getElementById('loadSampleBtn'),
+  sampleSelect: document.getElementById('sampleSelect'),
+  loadSelectedSampleBtn: document.getElementById('loadSelectedSampleBtn'),
+  loadRandomSampleBtn: document.getElementById('loadRandomSampleBtn'),
+  workerUrl: document.getElementById('workerUrl'),
+  attachmentFiles: document.getElementById('attachmentFiles'),
+  saveWorkerBtn: document.getElementById('saveWorkerBtn'),
+  verifyOnlineBtn: document.getElementById('verifyOnlineBtn'),
+  verifyOnlineBtnResults: document.getElementById('verifyOnlineBtnResults'),
+  threatIntelStatus: document.getElementById('threatIntelStatus'),
+  threatIntelResults: document.getElementById('threatIntelResults'),
   emptyState: document.getElementById('emptyState'),
   results: document.getElementById('results'),
   statusPill: document.getElementById('statusPill'),
@@ -371,11 +470,18 @@ function t(key, vars = {}) {
 }
 
 function init() {
+  populateSampleSelect();
+  els.workerUrl.value = localStorage.getItem('phishguard-worker-url') || '';
   applyLanguage(false);
   els.file.addEventListener('change', handleFileSelection);
   els.analyzeBtn.addEventListener('click', runAnalysis);
   els.clearBtn.addEventListener('click', clearAll);
-  els.loadSampleBtn.addEventListener('click', loadSample);
+  els.loadSampleBtn.addEventListener('click', loadNextSample);
+  els.loadSelectedSampleBtn.addEventListener('click', loadSelectedSample);
+  els.loadRandomSampleBtn.addEventListener('click', loadNextSample);
+  els.saveWorkerBtn.addEventListener('click', saveWorkerEndpoint);
+  els.verifyOnlineBtn.addEventListener('click', runOnlineVerification);
+  els.verifyOnlineBtnResults.addEventListener('click', runOnlineVerification);
   els.copyPromptBtn.addEventListener('click', copyAiPrompt);
   els.downloadJsonBtn.addEventListener('click', downloadJson);
   els.downloadMdBtn.addEventListener('click', downloadMarkdown);
@@ -389,6 +495,7 @@ function applyLanguage(rerun = true) {
   document.querySelectorAll('[data-i18n]').forEach((node) => { node.textContent = t(node.dataset.i18n); });
   document.querySelectorAll('[data-i18n-placeholder]').forEach((node) => { node.placeholder = t(node.dataset.i18nPlaceholder); });
   els.langButtons.forEach((button) => button.classList.toggle('active', button.dataset.lang === state.lang));
+  populateSampleSelect(false);
   if (state.loadedFileName && !state.lastResult) {
     els.statusPill.textContent = t('status.loaded', { name: state.loadedFileName });
   } else if (!state.lastResult) {
@@ -569,7 +676,10 @@ function runAnalysis() {
   const input = collectInput();
   const result = analyzeEmail(input);
   state.lastResult = result;
+  state.threatIntel = null;
   renderResult(result);
+  if (els.threatIntelStatus) els.threatIntelStatus.textContent = t('ti.notRun');
+  if (els.threatIntelResults) els.threatIntelResults.innerHTML = '';
 }
 
 function analyzeEmail(input) {
@@ -906,7 +1016,10 @@ function resultToMarkdown(result) {
   const attachments = result.indicators.attachments.map((item) => `- ${item.name} — ${item.findings.map((f) => f.message).join('; ') || t('table.noAttachmentFinding')}`).join('\n') || `- ${t('none')}`;
   const mitre = result.mitre.map((item) => `- **${item.id} ${item.name}**: ${item.rationale}`).join('\n') || `- ${t('none')}`;
   const actions = result.actions.map((action, index) => `${index + 1}. ${action}`).join('\n');
-  return `# ${t('md.title')}\n\n${t('md.generated')}: ${result.generatedAt}\n\n## ${t('md.verdict')}\n\n${t('md.score')}: **${result.score}/100**\n\n${t('md.classification')}: **${result.classification.label}**\n\n${result.summary}\n\n## ${t('md.evidence')}\n\n${evidence}\n\n## URLs\n\n${urls}\n\n## ${t('md.attachments')}\n\n${attachments}\n\n## MITRE ATT&CK\n\n${mitre}\n\n## ${t('md.actions')}\n\n${actions}\n`;
+  const threatIntel = result.threatIntel?.results?.length
+    ? result.threatIntel.results.map((item) => `- **${item.type}** ${item.indicator}: ${item.verdict} (${item.stats?.malicious || 0} malicious, ${item.stats?.suspicious || 0} suspicious)`).join('\n')
+    : `- ${t('ti.notRun')}`;
+  return `# ${t('md.title')}\n\n${t('md.generated')}: ${result.generatedAt}\n\n## ${t('md.verdict')}\n\n${t('md.score')}: **${result.score}/100**\n\n${t('md.classification')}: **${result.classification.label}**\n\n${result.summary}\n\n## ${t('md.evidence')}\n\n${evidence}\n\n## URLs\n\n${urls}\n\n## ${t('md.attachments')}\n\n${attachments}\n\n## MITRE ATT&CK\n\n${mitre}\n\n## Threat Intelligence\n\n${threatIntel}\n\n## ${t('md.actions')}\n\n${actions}\n`;
 }
 
 function downloadFile(filename, content, type) {
@@ -924,32 +1037,192 @@ function downloadFile(filename, content, type) {
 function clearAll() {
   [els.subject, els.from, els.replyTo, els.attachments, els.body, els.rawHeaders].forEach((el) => { el.value = ''; });
   els.file.value = '';
+  if (els.attachmentFiles) els.attachmentFiles.value = '';
   state.extracted = {};
   state.lastResult = null;
   state.loadedFileName = '';
+  state.threatIntel = null;
   els.results.classList.add('hidden');
   els.emptyState.classList.remove('hidden');
   els.statusPill.textContent = t('status.waiting');
   els.statusPill.style.color = 'var(--muted)';
+  if (els.threatIntelStatus) els.threatIntelStatus.textContent = t('ti.notRun');
+  if (els.threatIntelResults) els.threatIntelResults.innerHTML = '';
 }
 
-function loadSample() {
-  if (state.lang === 'es') {
-    els.subject.value = 'Urgente: verifica tu cuenta de Microsoft 365 en 24 horas';
-    els.from.value = 'Microsoft Security <security@microsoft-alerts-support.com>';
-    els.replyTo.value = 'helpdesk@account-review-center.top';
-    els.attachments.value = 'Verificacion_Cuenta.html, Instrucciones_MFA.zip';
-    els.body.value = 'Tu cuenta de Office 365 ha sido bloqueada por actividad inusual. Verifica tu cuenta inmediatamente en menos de 24 horas para evitar una suspensión permanente. Inicia sesión aquí: https://login.microsoft-security.account-review-center.top/session?id=9321 o usa https://bit.ly/verify-m365-now';
-  } else {
-    els.subject.value = 'Urgent: verify your Microsoft 365 account within 24 hours';
-    els.from.value = 'Microsoft Security <security@microsoft-alerts-support.com>';
-    els.replyTo.value = 'helpdesk@account-review-center.top';
-    els.attachments.value = 'Account_Verification.html, MFA_Instructions.zip';
-    els.body.value = 'Your Office 365 account has been locked due to unusual activity. Verify your account immediately within 24 hours to avoid permanent suspension. Sign in here: https://login.microsoft-security.account-review-center.top/session?id=9321 or use https://bit.ly/verify-m365-now';
+
+function populateSampleSelect(preserveValue = true) {
+  if (!els.sampleSelect) return;
+  const previous = preserveValue ? els.sampleSelect.value : '';
+  els.sampleSelect.innerHTML = EXAMPLE_EMAILS.map((item, index) => {
+    const label = state.lang === 'es' ? item.es : item.en;
+    return `<option value="${index}">${index + 1}. ${escapeHtml(label)}</option>`;
+  }).join('');
+  if (previous) els.sampleSelect.value = previous;
+}
+
+function loadSelectedSample() {
+  const index = Number(els.sampleSelect.value || 0);
+  loadExampleByIndex(index);
+}
+
+function loadNextSample() {
+  state.exampleIndex = (state.exampleIndex + 1) % EXAMPLE_EMAILS.length;
+  if (els.sampleSelect) els.sampleSelect.value = String(state.exampleIndex);
+  loadExampleByIndex(state.exampleIndex);
+}
+
+async function loadExampleByIndex(index) {
+  const sample = EXAMPLE_EMAILS[index] || EXAMPLE_EMAILS[0];
+  try {
+    const response = await fetch(`examples/${sample.file}`, { cache: 'no-store' });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const raw = await response.text();
+    clearInputFieldsOnly();
+    state.extracted = parseEml(raw);
+    state.loadedFileName = sample.file;
+    state.exampleIndex = index;
+    hydrateFields(state.extracted);
+    els.statusPill.textContent = t('status.loaded', { name: sample.file });
+    runAnalysis();
+    document.getElementById('analyzer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch (error) {
+    alert(`Could not load sample ${sample.file}: ${error.message}`);
   }
-  els.rawHeaders.value = 'Authentication-Results: mx.example.com; spf=fail smtp.mailfrom=microsoft-alerts-support.com; dkim=none; dmarc=fail header.from=microsoft-alerts-support.com';
-  runAnalysis();
-  document.getElementById('analyzer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function clearInputFieldsOnly() {
+  [els.subject, els.from, els.replyTo, els.attachments, els.body, els.rawHeaders].forEach((el) => { el.value = ''; });
+  els.file.value = '';
+  if (els.attachmentFiles) els.attachmentFiles.value = '';
+}
+
+function saveWorkerEndpoint() {
+  const endpoint = sanitizeWorkerEndpoint(els.workerUrl.value);
+  els.workerUrl.value = endpoint;
+  if (endpoint) localStorage.setItem('phishguard-worker-url', endpoint);
+  else localStorage.removeItem('phishguard-worker-url');
+  setIntelStatus(t('ti.saved'));
+}
+
+function sanitizeWorkerEndpoint(value) {
+  return String(value || '').trim().replace(/\/+$/, '');
+}
+
+async function runOnlineVerification() {
+  if (!state.lastResult) runAnalysis();
+  switchToTab('intel');
+
+  const endpoint = sanitizeWorkerEndpoint(els.workerUrl.value || localStorage.getItem('phishguard-worker-url'));
+  if (!endpoint) {
+    setIntelStatus(t('ti.noWorker'));
+    return;
+  }
+  localStorage.setItem('phishguard-worker-url', endpoint);
+  els.workerUrl.value = endpoint;
+
+  const indicators = await buildThreatIntelRequest(state.lastResult);
+  const total = Object.values(indicators).reduce((sum, arr) => sum + (Array.isArray(arr) ? arr.length : 0), 0);
+  if (!total) {
+    setIntelStatus(t('ti.noIndicators'));
+    return;
+  }
+
+  setIntelStatus(t('ti.loading'));
+  els.threatIntelResults.innerHTML = '';
+  try {
+    const lookupUrl = endpoint.endsWith('/lookup') ? endpoint : `${endpoint}/lookup`;
+    const response = await fetch(lookupUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ indicators }),
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok || payload.ok === false) throw new Error(payload.error || `HTTP ${response.status}`);
+    state.threatIntel = payload;
+    state.lastResult.threatIntel = payload;
+    renderThreatIntel(payload);
+    setIntelStatus(t('ti.complete', { count: payload.results?.length || 0 }));
+  } catch (error) {
+    setIntelStatus(t('ti.error', { message: error.message || 'unknown error' }));
+  }
+}
+
+async function buildThreatIntelRequest(result) {
+  const urlItems = (result.indicators.urls || []).map((item) => item.url).filter(Boolean);
+  const urlDomains = (result.indicators.urls || []).map((item) => item.domain).filter(Boolean);
+  const domains = unique([
+    result.indicators.domains?.fromDomain,
+    result.indicators.domains?.replyToDomain,
+    ...urlDomains.filter((domain) => !isIpAddress(domain)),
+  ]).slice(0, THREAT_INTEL_LIMITS.domains);
+  const ips = unique(urlDomains.filter(isIpAddress)).slice(0, THREAT_INTEL_LIMITS.ips);
+  const urls = unique(urlItems).slice(0, THREAT_INTEL_LIMITS.urls);
+  const fileHashes = (await hashSelectedAttachmentFiles()).slice(0, THREAT_INTEL_LIMITS.fileHashes);
+  return { domains, urls, ips, fileHashes };
+}
+
+function unique(values) {
+  return [...new Set(values.filter(Boolean).map((value) => String(value).trim()).filter(Boolean))];
+}
+
+function isIpAddress(value) {
+  return /^\d{1,3}(\.\d{1,3}){3}$/.test(String(value || ''));
+}
+
+async function hashSelectedAttachmentFiles() {
+  const files = [...(els.attachmentFiles?.files || [])];
+  const results = [];
+  for (const file of files) {
+    const buffer = await file.arrayBuffer();
+    const digest = await crypto.subtle.digest('SHA-256', buffer);
+    const sha256 = [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
+    results.push({ filename: file.name, size: file.size, sha256 });
+  }
+  return results;
+}
+
+function setIntelStatus(message) {
+  if (els.threatIntelStatus) els.threatIntelStatus.textContent = message;
+}
+
+function renderThreatIntel(payload) {
+  const results = payload.results || [];
+  if (!results.length) {
+    els.threatIntelResults.innerHTML = `<p class="muted">${escapeHtml(t('ti.noIndicators'))}</p>`;
+    return;
+  }
+  els.threatIntelResults.innerHTML = `<div class="intel-grid">${results.map(renderIntelCard).join('')}</div>`;
+}
+
+function renderIntelCard(item) {
+  const stats = item.stats || {};
+  const verdict = item.verdict || 'unknown';
+  const typeKey = `ti.type.${item.type}`;
+  const statsText = t('ti.stats', {
+    malicious: stats.malicious ?? 0,
+    suspicious: stats.suspicious ?? 0,
+    harmless: stats.harmless ?? 0,
+    undetected: stats.undetected ?? 0,
+  });
+  const link = item.guiUrl ? `<br><a class="intel-link" href="${escapeHtml(item.guiUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(t('ti.openVt'))}</a>` : '';
+  const err = item.error ? `<br><span class="muted">${escapeHtml(item.error)}</span>` : '';
+  return `
+    <article class="intel-card">
+      <div class="intel-card-header">
+        <div>
+          <div class="muted">${escapeHtml(t(typeKey))}</div>
+          <div class="intel-indicator">${escapeHtml(item.indicator || '')}</div>
+        </div>
+        <span class="verdict-pill verdict-${escapeHtml(verdict)}">${escapeHtml(t(`ti.verdict.${verdict}`))}</span>
+      </div>
+      <p class="intel-stats">${escapeHtml(statsText)}${err}${link}</p>
+    </article>`;
+}
+
+function switchToTab(target) {
+  const tab = document.querySelector(`.tab[data-tab="${target}"]`);
+  if (tab) switchTab({ currentTarget: tab });
 }
 
 init();

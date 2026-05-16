@@ -1,134 +1,159 @@
 # PhishGuard AI — Phishing Email Analyzer
 
-PhishGuard AI is a privacy-first phishing email analyzer. It runs entirely in the browser and can be deployed as a static website using GitHub Pages.
+PhishGuard AI is a browser-based phishing email analyzer designed as a practical cybersecurity portfolio project and a usable triage assistant for suspicious emails.
 
-The public page is written as a real tool interface. Architecture, deployment and CV positioning are documented here in the README.
+The core analyzer runs locally in the browser. Optional online reputation verification is available through a Cloudflare Worker proxy that queries VirusTotal without exposing the API key in the frontend.
 
-## What it does
+## Main features
 
-- Uploads and parses `.eml` email files locally in the browser.
-- Supports manual input for subject, sender, Reply-To, body and attachment names.
-- Extracts URLs, domains, attachment names and authentication signals.
-- Scores phishing risk from 0 to 100.
-- Generates analyst-ready triage output:
-  - Executive summary
-  - Risk evidence
-  - Extracted indicators
-  - Suggested MITRE ATT&CK mapping
-  - Recommended analyst actions
-  - AI enrichment prompt
-- Exports results to JSON and Markdown.
-- Includes an English/Spanish language switch in the interface.
+- Upload and parse `.eml` files.
+- Paste email evidence manually: subject, sender, Reply-To, body, headers and attachment names.
+- Load 10 realistic demo `.eml` examples from benign to suspicious, spam, BEC and phishing.
+- Extract URLs, domains, IP-based URLs and attachment names.
+- Check SPF, DKIM and DMARC evidence when present in headers.
+- Detect phishing signals: urgency, credential harvesting, payment pressure, impersonation, URL shorteners, punycode, suspicious TLDs and risky attachment extensions.
+- Score phishing risk from `0/100` to `100/100`.
+- Map likely behavior to MITRE ATT&CK techniques.
+- Export analyst reports as JSON or Markdown.
+- Switch interface language between English and Spanish.
+- Optional VirusTotal enrichment for:
+  - domains;
+  - URLs;
+  - IP addresses;
+  - SHA-256 hashes of attachment samples.
 
-## Why this project is useful
+## Online reputation architecture
 
-This project demonstrates practical knowledge of:
+The frontend is still deployable on GitHub Pages:
 
-- phishing triage;
-- email header analysis;
-- IOC extraction;
-- risk scoring;
-- MITRE ATT&CK mapping;
-- browser-based secure-by-design tooling;
-- email triage and incident-response documentation workflows.
+```text
+GitHub Pages frontend
+        ↓
+Cloudflare Worker proxy
+        ↓
+VirusTotal API v3
+```
 
-## Live deployment with GitHub Pages
+The API key is stored as a Cloudflare Worker secret, not inside `app.js`.
 
-1. Create a new public GitHub repository, for example: `phishguard-ai`.
-2. Upload all project files to the repository root:
-   - `index.html`
-   - `styles.css`
-   - `app.js`
-   - `assets/`
-   - `examples/`
-   - `docs/`
+The Worker only receives indicators selected by the app:
+
+- domains;
+- URLs;
+- IP addresses;
+- optional SHA-256 file hashes.
+
+It does **not** receive the full `.eml` file or email body.
+
+## Attachment handling
+
+PhishGuard AI does not detonate attachments and does not upload files to VirusTotal.
+
+For attachment enrichment, the user can select local attachment samples. The browser calculates SHA-256 locally using the Web Crypto API, and only the hash is sent to the Worker for a VirusTotal file report lookup.
+
+This gives a realistic “attachment reputation” workflow without uploading potentially sensitive samples.
+
+## Deploy frontend with GitHub Pages
+
+1. Create a GitHub repository, for example:
+
+```text
+phishguard-ai
+```
+
+2. Upload all project files to the repository root.
 3. Go to **Settings → Pages**.
 4. Under **Build and deployment**, choose **Deploy from a branch**.
 5. Select:
    - Branch: `main`
    - Folder: `/root`
 6. Save.
-7. Your site should become available at:
+7. Your site will be published at:
 
 ```text
 https://YOUR_USERNAME.github.io/phishguard-ai/
 ```
 
-## Local usage
+## Configure VirusTotal enrichment
 
-Open `index.html` directly in a browser, or run a simple local server:
+See [`VIRUSTOTAL_SETUP.md`](VIRUSTOTAL_SETUP.md).
+
+Short version:
+
+```bash
+cd worker
+npm install
+npx wrangler login
+npx wrangler secret put VT_API_KEY
+npm run deploy
+```
+
+Then copy the deployed Worker URL into the **Online reputation verification** field inside the app.
+
+## Local development
+
+Run a local static server:
 
 ```bash
 python -m http.server 8000
 ```
 
-Then open:
+Open:
 
 ```text
 http://localhost:8000
 ```
 
+For the Worker:
+
+```bash
+cd worker
+npm install
+cp .dev.vars.example .dev.vars
+# edit .dev.vars with your VirusTotal key
+npm run dev
+```
+
+## Demo examples included
+
+The `examples/` folder includes 10 synthetic `.eml` files:
+
+1. Legitimate internal security update.
+2. Legitimate supplier invoice with PDF.
+3. Marketing newsletter.
+4. Spam discount offer with multiple links.
+5. Suspicious invoice with Reply-To mismatch.
+6. Microsoft 365 credential phishing.
+7. Parcel delivery lure with IP-based URL.
+8. BEC wire transfer with no URL.
+9. Macro-enabled invoice attachment.
+10. Punycode/homograph security alert.
+
 ## Example CV bullet
 
 ```text
-Built PhishGuard AI, a browser-based phishing email analyzer that parses .eml files, extracts IOCs, scores phishing risk, maps likely MITRE ATT&CK techniques, and generates analyst-ready investigation guidance without sending email data to a backend.
+Built PhishGuard AI, a browser-based phishing email analyzer that parses .eml files, extracts IOCs, scores phishing risk, maps likely MITRE ATT&CK techniques, and enriches domains, URLs, IPs and attachment hashes through a Cloudflare Worker integration with VirusTotal API v3.
 ```
 
-## Example LinkedIn/GitHub description
+## Example technical description
 
 ```text
-PhishGuard AI is a privacy-first phishing email triage tool. It analyzes suspicious emails locally in the browser, extracts URLs and attachment indicators, evaluates sender-authentication signals, produces a phishing risk score, and exports a structured analyst report.
+PhishGuard AI performs client-side phishing triage by extracting IOCs from email evidence, evaluating authentication headers and social-engineering signals, assigning a risk score, generating analyst actions and optionally querying VirusTotal through a serverless proxy so API keys are not exposed in the browser.
 ```
-
-## Technical design
-
-The project is intentionally static:
-
-- No backend.
-- No database.
-- No API key exposed in the frontend.
-- No email content uploaded to third-party services.
-
-The analyzer uses deterministic heuristics rather than a hosted LLM. This is deliberate: a pure GitHub Pages deployment cannot securely protect private API keys. The app therefore generates an **AI enrichment prompt** that an analyst can copy into an approved AI tool after reviewing data-handling requirements.
-
-## Risk checks included
-
-| Category | Examples |
-|---|---|
-| Authentication | SPF, DKIM, DMARC failures when present in headers |
-| Sender anomalies | From / Reply-To domain mismatch |
-| URL risk | shorteners, IP-based URLs, punycode, suspicious TLDs, excessive subdomains |
-| Attachment risk | executable, script, ISO, HTML, compressed and macro-enabled files |
-| Social engineering | urgency, credential prompts, payment pressure, impersonation language |
-| Analyst output | recommended actions, MITRE mapping, Markdown/JSON export |
 
 ## Limitations
 
-This is an educational and portfolio-grade project, not a secure email gateway or enterprise detection product.
+This is a portfolio/demo-grade analyzer, not an enterprise email security gateway.
 
 Known limitations:
 
-- MIME parsing is intentionally lightweight.
-- It does not detonate attachments.
-- It does not query live threat-intelligence feeds.
-- It does not verify domain reputation online.
-- It cannot guarantee that an email is benign or malicious.
-- MITRE mapping is indicative and should be reviewed by a human analyst.
-
-## Safe handling note
-
-Do not upload real confidential emails to public websites or paste sensitive email data into public AI tools. This app processes files locally, but the deployed GitHub Pages website itself is public.
-
-## Suggested improvements
-
-Future extensions:
-
-- Add VirusTotal or URLScan integration through a secure backend.
-- Add proper MIME parsing with a vetted parser.
-- Add mailbox-provider-specific header interpretation.
-- Add screenshot rendering for HTML emails in a sandbox.
-- Add YARA/Sigma-inspired rule packs.
-- Add LLM summarization through a backend that protects API keys.
+- MIME parsing is lightweight.
+- It does not render HTML emails in a sandbox.
+- It does not upload or detonate attachments.
+- VirusTotal lookups depend on your API plan, quota and available reports.
+- URL lookups use existing VirusTotal reports; the Worker does not submit URLs for active scanning by default.
+- MITRE ATT&CK mapping is indicative and requires analyst review.
+- A low score does not prove that a message is benign.
 
 ## License
 

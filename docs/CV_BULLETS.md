@@ -2,11 +2,11 @@
 
 ## Short CV bullet
 
-Built a browser-based phishing email analyzer that parses `.eml` files, extracts URLs and attachment indicators, evaluates sender-authentication signals, scores phishing risk, maps likely MITRE ATT&CK techniques, and exports analyst-ready triage reports.
+Built a browser-based phishing email analyzer that parses `.eml` files, extracts IOCs, scores phishing risk, maps likely MITRE ATT&CK techniques, and enriches domains, URLs, IPs and attachment hashes through a Cloudflare Worker integration with VirusTotal API v3.
 
 ## Stronger CV bullet
 
-Developed PhishGuard AI, a privacy-first phishing email analysis tool using HTML, CSS and JavaScript. The tool parses `.eml` files locally, extracts IOCs, detects risky URL and attachment patterns, evaluates SPF/DKIM/DMARC evidence, generates a 0–100 risk score, maps likely MITRE ATT&CK techniques and exports analyst-ready Markdown/JSON reports.
+Developed PhishGuard AI, a bilingual phishing email analysis tool using HTML, CSS and JavaScript. The tool parses `.eml` files locally, extracts IOCs, detects risky URL and attachment patterns, evaluates SPF/DKIM/DMARC evidence, generates a 0–100 risk score, maps likely MITRE ATT&CK techniques, exports analyst-ready reports and optionally verifies indicators online through a serverless VirusTotal proxy without exposing API keys in the frontend.
 
 ## Skills to list
 
@@ -14,7 +14,9 @@ Developed PhishGuard AI, a privacy-first phishing email analysis tool using HTML
 - Email Header Analysis
 - IOC Extraction
 - MITRE ATT&CK
-- Email Triage
+- VirusTotal API v3
+- Cloudflare Workers
+- Serverless API Proxy
 - JavaScript
 - Secure Frontend Design
 - GitHub Pages
@@ -22,6 +24,6 @@ Developed PhishGuard AI, a privacy-first phishing email analysis tool using HTML
 
 ## Interview explanation
 
-I built PhishGuard AI as a privacy-first phishing email analysis tool. The main design decision was to avoid sending suspicious email content to a backend. The app parses `.eml` files directly in the browser, extracts URLs, domains, attachment names and authentication results, then applies a transparent scoring model. The output is designed for practical email triage: executive summary, evidence, indicators, MITRE mapping and recommended actions.
+I built PhishGuard AI as a practical phishing email triage project. The core analyzer runs in the browser: it parses `.eml` files, extracts URLs, domains, attachment names and authentication results, and then applies a transparent scoring model. The output is designed for analyst workflow: executive summary, risk evidence, indicators, MITRE mapping, recommended actions and Markdown/JSON export.
 
-I intentionally did not expose an LLM API key in the frontend because a static GitHub Pages application cannot protect secrets. Instead, the tool generates an AI enrichment prompt that can be used in an approved environment after validating data-handling rules.
+The second design decision was to add online reputation without exposing secrets. A static GitHub Pages app cannot safely store private API keys, so I implemented a Cloudflare Worker proxy. The frontend sends only extracted IOCs and optional SHA-256 file hashes to the Worker, and the Worker queries VirusTotal API v3 using a secret stored in Cloudflare.

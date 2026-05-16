@@ -1,0 +1,8 @@
+name = "phishguard-vt-worker"
+main = "src/index.js"
+compatibility_date = "2026-05-01"
+
+# Optional: restrict browser access to your GitHub Pages URL after deployment.
+# Example:
+# [vars]
+# ALLOWED_ORIGIN = "https://YOUR_USER.github.io"

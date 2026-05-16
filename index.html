@@ -83,6 +83,17 @@
             <small data-i18n="input.uploadSmall">Headers, body, URLs and attachment names are parsed locally.</small>
           </label>
 
+          <div class="sample-tools" aria-label="Sample email loader">
+            <label class="sample-select-label">
+              <span data-i18n="sample.label">Demo email examples</span>
+              <select id="sampleSelect" aria-label="Demo email examples"></select>
+            </label>
+            <div class="sample-actions">
+              <button class="button secondary compact" id="loadSelectedSampleBtn" type="button" data-i18n="sample.loadSelected">Load selected</button>
+              <button class="button ghost compact" id="loadRandomSampleBtn" type="button" data-i18n="sample.loadNext">Load next</button>
+            </div>
+          </div>
+
           <div class="form-grid">
             <label>
               <span data-i18n="field.subject">Subject</span>
@@ -113,6 +124,24 @@
               <span data-i18n="field.rawHeaders">Raw headers or Authentication-Results</span>
               <textarea id="rawHeaders" rows="6" placeholder="Authentication-Results: spf=fail dkim=none dmarc=fail..." data-i18n-placeholder="ph.rawHeaders"></textarea>
             </label>
+          </details>
+
+          <details class="advanced-block online-block">
+            <summary data-i18n="ti.settingsTitle">Online reputation verification</summary>
+            <p class="muted small" data-i18n="ti.settingsCopy">Optional: connect a Cloudflare Worker proxy to query VirusTotal without exposing your API key in the browser.</p>
+            <label>
+              <span data-i18n="ti.workerUrl">Cloudflare Worker URL</span>
+              <input id="workerUrl" type="url" placeholder="https://phishguard-vt.yourname.workers.dev" autocomplete="off" />
+            </label>
+            <label class="file-inline">
+              <span data-i18n="ti.attachmentSamples">Optional attachment samples for hash reputation</span>
+              <input id="attachmentFiles" type="file" multiple />
+              <small data-i18n="ti.attachmentNote">Files are hashed locally. The app sends SHA-256 hashes only, not file contents.</small>
+            </label>
+            <div class="inline-actions">
+              <button class="button secondary compact" id="saveWorkerBtn" type="button" data-i18n="ti.saveWorker">Save endpoint</button>
+              <button class="button ghost compact" id="verifyOnlineBtn" type="button" data-i18n="ti.verifyButton">Verify IOCs online</button>
+            </div>
           </details>
 
           <button class="button primary full" id="analyzeBtn" type="button" data-i18n="input.analyze">Analyze email</button>
@@ -150,6 +179,7 @@
               <button class="tab active" data-tab="evidence" type="button" data-i18n="tab.evidence">Evidence</button>
               <button class="tab" data-tab="indicators" type="button" data-i18n="tab.indicators">Indicators</button>
               <button class="tab" data-tab="actions" type="button" data-i18n="tab.actions">Actions</button>
+              <button class="tab" data-tab="intel" type="button" data-i18n="tab.intel">Threat intel</button>
               <button class="tab" data-tab="ai" type="button" data-i18n="tab.ai">AI prompt</button>
             </div>
 
@@ -168,6 +198,20 @@
               <ol class="action-list" id="actionList"></ol>
               <h4 data-i18n="mitre.title">Likely MITRE ATT&CK mapping</h4>
               <div class="mitre-list" id="mitreList"></div>
+            </section>
+
+
+
+            <section class="tab-panel hidden" id="tab-intel">
+              <div class="tab-heading-row">
+                <div>
+                  <h4 data-i18n="ti.title">Online reputation verification</h4>
+                  <p class="muted" data-i18n="ti.copy">Queries domains, URLs, IPs and optional attachment hashes through your configured Worker.</p>
+                </div>
+                <button class="button secondary compact" id="verifyOnlineBtnResults" type="button" data-i18n="ti.verifyButton">Verify IOCs online</button>
+              </div>
+              <div id="threatIntelStatus" class="intel-status" data-i18n="ti.notRun">Online verification has not been run yet.</div>
+              <div id="threatIntelResults"></div>
             </section>
 
             <section class="tab-panel hidden" id="tab-ai">
@@ -207,6 +251,10 @@
         <article class="info-card">
           <h3 data-i18n="card.social.title">Social engineering</h3>
           <p data-i18n="card.social.copy">Scores urgency, credential-harvesting language, payment pressure and impersonation patterns.</p>
+        </article>
+        <article class="info-card">
+          <h3 data-i18n="card.intel.title">Online reputation</h3>
+          <p data-i18n="card.intel.copy">Optionally verifies domains, URLs, IPs and file hashes through VirusTotal using a serverless proxy.</p>
         </article>
       </div>
     </section>
