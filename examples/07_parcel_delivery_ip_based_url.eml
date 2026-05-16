@@ -1,0 +1,19 @@
+Received: from relay.parcel-notify.example.test (unknown [198.51.100.199]) by mx.company.example with ESMTP id PARCEL730812 for <user@company.example>; Sat, 16 May 2026 14:09:22 +0200
+Authentication-Results: mx.company.example; spf=fail smtp.mailfrom=parcel-notify.example.test; dkim=none; dmarc=fail header.from=parcel-notify.example.test
+Date: Sat, 16 May 2026 14:09:18 +0200
+From: Parcel Notification <tracking@parcel-notify.example.test>
+To: User <user@company.example>
+Subject: Package held: confirm delivery fee
+Reply-To: support@delivery-review.example.test
+Message-ID: <tracking-ES-730812@parcel-notify.example.test>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+
+Dear customer,
+
+Your package is currently on hold due to an unpaid delivery fee of 1.98 EUR. Confirm delivery within 12 hours to avoid return to sender.
+
+Tracking update: http://192.0.2.45/delivery/confirm?parcel=ES730812
+
+Do not ignore this notice.

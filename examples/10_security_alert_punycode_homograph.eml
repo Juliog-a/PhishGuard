@@ -1,0 +1,30 @@
+Received: from identity-protection.example.test (unknown [203.0.113.171]) by mx.company.example with ESMTP id IDP5F2291 for <employee@company.example>; Sat, 16 May 2026 17:28:11 +0200
+Authentication-Results: mx.company.example; spf=fail smtp.mailfrom=identity-protection.example.test; dkim=fail header.d=identity-protection.example.test; dmarc=fail header.from=identity-protection.example.test
+Date: Sat, 16 May 2026 17:28:08 +0200
+From: Account Protection <security@identity-protection.example.test>
+To: Employee <employee@company.example>
+Subject: Critical security alert: unusual sign-in blocked
+Reply-To: no-reply@identity-protection.example.test
+Message-ID: <alert-5f2291@identity-protection.example.test>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="----=_Part_PUNY_20260516"
+
+------=_Part_PUNY_20260516
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+
+We blocked an unusual sign-in attempt from a new location.
+
+To prevent account suspension, verify your identity immediately:
+https://xn--microsft-rza-login.example.test/security/verify
+
+This security action expires in 30 minutes.
+
+------=_Part_PUNY_20260516
+Content-Type: application/zip; name="Security_Action.zip"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="Security_Action.zip"
+
+VGhpcyBpcyBhIHNhZmUgZHVtbXkgYXR0YWNobWVudCBmb3IgcGhpc2hpbmctYW5hbHl6ZXIgdGVzdGluZyBvbmx5Lg==
+
+------=_Part_PUNY_20260516--

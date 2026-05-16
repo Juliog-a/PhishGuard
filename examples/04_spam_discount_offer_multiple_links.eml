@@ -1,0 +1,22 @@
+Received: from bulk-07.offers.example.biz (bulk-07.offers.example.biz [203.0.113.88]) by mx.company.example with ESMTP id BULK8831 for <user@company.example>; Sat, 16 May 2026 07:32:12 +0200
+Authentication-Results: mx.company.example; spf=softfail smtp.mailfrom=offers.example.biz; dkim=none; dmarc=none header.from=offers.example.biz
+Date: Sat, 16 May 2026 07:32:09 +0200
+From: Premium Deals <promo@offers.example.biz>
+To: User <user@company.example>
+Subject: Last chance: exclusive discount expires tonight
+Reply-To: promotions@reply.offers.example.biz
+Message-ID: <promo-883188@offers.example.biz>
+List-Unsubscribe: <mailto:unsubscribe@offers.example.biz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+
+Hi,
+
+Your exclusive discount expires tonight. Claim your offer here:
+https://offers.example.biz/deal?id=883188
+
+Manage preferences:
+https://offers.example.biz/preferences
+
+This commercial email is not related to your company account.

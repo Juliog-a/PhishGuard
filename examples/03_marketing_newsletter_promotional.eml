@@ -1,0 +1,20 @@
+Received: from mta-14.mailer.news.example.org (mta-14.mailer.news.example.org [198.51.100.77]) by mx.company.example with ESMTPS id 7719A3C2D1 for <user@company.example>; Sat, 16 May 2026 09:45:03 +0200
+Authentication-Results: mx.company.example; spf=pass smtp.mailfrom=mailer.news.example.org; dkim=pass header.d=news.example.org; dmarc=pass header.from=news.example.org
+Date: Sat, 16 May 2026 09:45:01 +0200
+From: CloudSec Weekly <newsletter@news.example.org>
+To: User <user@company.example>
+Subject: Weekly cloud security digest and webinar invitation
+Message-ID: <campaign.20260516.443921@mailer.news.example.org>
+List-Unsubscribe: <mailto:unsubscribe@news.example.org>, <https://news.example.org/unsubscribe?id=443921>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+
+Hello,
+
+Here is this week's security digest with articles, product updates and a webinar invitation.
+
+Read the digest: https://news.example.org/digest/cloud-security-weekly
+Unsubscribe: https://news.example.org/unsubscribe?id=443921
+
+CloudSec Weekly

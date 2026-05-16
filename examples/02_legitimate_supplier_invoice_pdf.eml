@@ -1,0 +1,32 @@
+Received: from smtp.vendor.example.net (smtp.vendor.example.net [203.0.113.40]) by mx.company.example with ESMTPS id 91A02B3C4D for <accounts@company.example>; Sat, 16 May 2026 11:18:42 +0200
+Authentication-Results: mx.company.example; spf=pass smtp.mailfrom=vendor.example.net; dkim=pass header.d=vendor.example.net; dmarc=pass header.from=vendor.example.net
+Date: Sat, 16 May 2026 11:18:38 +0200
+From: Northwind Billing <billing@vendor.example.net>
+To: Accounts Payable <accounts@company.example>
+Subject: Invoice INV-2026-0516 for April services
+Message-ID: <invoice-2026-0516-8842@billing.vendor.example.net>
+DKIM-Signature: v=1; a=rsa-sha256; d=vendor.example.net; s=smtp; c=relaxed/relaxed; h=from:to:subject:date; bh=exampleBodyHash; b=exampleSignatureValue
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="----=_Part_INV_20260516_001"
+
+------=_Part_INV_20260516_001
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+
+Good morning,
+
+Attached is invoice INV-2026-0516 for the April maintenance services agreed under contract NW-4421.
+
+Payment terms remain net 30. Please contact billing@vendor.example.net if any information needs to be corrected.
+
+Kind regards,
+Northwind Billing
+
+------=_Part_INV_20260516_001
+Content-Type: application/pdf; name="INV-2026-0516.pdf"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="INV-2026-0516.pdf"
+
+VGhpcyBpcyBhIHNhZmUgZHVtbXkgYXR0YWNobWVudCBmb3IgcGhpc2hpbmctYW5hbHl6ZXIgdGVzdGluZyBvbmx5Lg==
+
+------=_Part_INV_20260516_001--

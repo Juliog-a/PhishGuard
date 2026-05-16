@@ -1,0 +1,32 @@
+Received: from smtp.billing-docs.example.test (unknown [198.51.100.210]) by mx.company.example with ESMTP id BILL99381 for <accounts@company.example>; Sat, 16 May 2026 16:02:33 +0200
+Authentication-Results: mx.company.example; spf=softfail smtp.mailfrom=billing-docs.example.test; dkim=none; dmarc=fail header.from=billing-docs.example.test
+Date: Sat, 16 May 2026 16:02:28 +0200
+From: Billing Department <billing@billing-docs.example.test>
+To: Accounts <accounts@company.example>
+Subject: Updated statement requires review
+Reply-To: billing-team@resolution-desk.example.test
+Message-ID: <statement-99381@billing-docs.example.test>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="----=_Part_MACRO_20260516"
+
+------=_Part_MACRO_20260516
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+
+Hello,
+
+Please review the attached statement and enable editing if prompted so the document can display the protected invoice table correctly.
+
+The payment deadline is today, so please process it as soon as possible.
+
+Regards,
+Billing Department
+
+------=_Part_MACRO_20260516
+Content-Type: application/vnd.ms-excel.sheet.macroEnabled.12; name="Statement_Review_99381.xlsm"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="Statement_Review_99381.xlsm"
+
+VGhpcyBpcyBhIHNhZmUgZHVtbXkgYXR0YWNobWVudCBmb3IgcGhpc2hpbmctYW5hbHl6ZXIgdGVzdGluZyBvbmx5Lg==
+
+------=_Part_MACRO_20260516--

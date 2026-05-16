@@ -1,0 +1,21 @@
+Received: from mail.corp.example.com (mail.corp.example.com [198.51.100.24]) by mx.company.example with ESMTPS id 0A1B2C3D4E for <employee@company.example>; Sat, 16 May 2026 10:01:22 +0200
+Received: from intranet.corp.example.com (intranet.corp.example.com [10.20.4.15]) by mail.corp.example.com with ESMTP id 83291 for <employee@company.example>; Sat, 16 May 2026 10:01:20 +0200
+Authentication-Results: mx.company.example; spf=pass smtp.mailfrom=corp.example.com; dkim=pass header.d=corp.example.com; dmarc=pass header.from=corp.example.com
+Date: Sat, 16 May 2026 10:01:18 +0200
+From: IT Security <security@corp.example.com>
+To: Employee <employee@company.example>
+Subject: Scheduled password policy update - no action required
+Message-ID: <20260516100122.7fd8a1@corp.example.com>
+DKIM-Signature: v=1; a=rsa-sha256; d=corp.example.com; s=mail2026; c=relaxed/relaxed; h=from:to:subject:date; bh=exampleBodyHash; b=exampleSignatureValue
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+
+Hello,
+
+This is a scheduled notice from the IT Security team. The password policy will be updated next Monday at 08:00.
+
+No password reset is required from this email. Do not share credentials with anyone. For questions, use the internal helpdesk portal already bookmarked in the corporate intranet.
+
+Regards,
+IT Security Team

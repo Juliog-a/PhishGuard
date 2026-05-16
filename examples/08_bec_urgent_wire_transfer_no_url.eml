@@ -1,0 +1,19 @@
+Received: from smtp.executive-mail.example.test (unknown [203.0.113.225]) by mx.company.example with ESMTP id CEO20260516 for <finance@company.example>; Sat, 16 May 2026 15:17:44 +0200
+Authentication-Results: mx.company.example; spf=fail smtp.mailfrom=executive-mail.example.test; dkim=none; dmarc=fail header.from=executive-mail.example.test
+Date: Sat, 16 May 2026 15:17:40 +0200
+From: Carlos Medina <c.medina@company-executive.example.test>
+To: Finance Team <finance@company.example>
+Subject: Confidential payment request
+Reply-To: carlos.medina.private@consultant-mail.example.test
+Message-ID: <ceo-request-20260516@executive-mail.example.test>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+
+Hi,
+
+I am in meetings and need this handled discreetly before close of business. Please prepare an urgent supplier payment and reply when you are ready to receive the details.
+
+Do not call me now. This is time sensitive.
+
+Carlos
