@@ -1,0 +1,22 @@
+From: Microsoft Security <security@microsoft-alerts-support.com>
+Reply-To: helpdesk@account-review-center.top
+To: employee@example.com
+Subject: Urgent: verify your Microsoft 365 account within 24 hours
+Authentication-Results: mx.example.com; spf=fail smtp.mailfrom=microsoft-alerts-support.com; dkim=none; dmarc=fail header.from=microsoft-alerts-support.com
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="demo-boundary"
+
+--demo-boundary
+Content-Type: text/plain; charset="UTF-8"
+
+Your Office 365 account has been locked due to unusual activity.
+Verify your account immediately within 24 hours to avoid permanent suspension.
+Sign in here: https://login.microsoft-security.account-review-center.top/session?id=9321
+Alternative link: https://bit.ly/verify-m365-now
+
+--demo-boundary
+Content-Type: text/html; name="Account_Verification.html"
+Content-Disposition: attachment; filename="Account_Verification.html"
+
+<html><body>Demo attachment</body></html>
+--demo-boundary--

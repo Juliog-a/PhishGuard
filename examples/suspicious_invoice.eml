@@ -1,0 +1,21 @@
+From: Finance Department <finance@vendor-billing-center.xyz>
+Reply-To: payment.office@vendor-billing-center.xyz
+To: accounts@example.com
+Subject: Outstanding invoice payment required today
+Authentication-Results: mx.example.com; spf=softfail smtp.mailfrom=vendor-billing-center.xyz; dkim=fail; dmarc=fail header.from=vendor-billing-center.xyz
+Content-Type: multipart/mixed; boundary="invoice-boundary"
+
+--invoice-boundary
+Content-Type: text/plain; charset="UTF-8"
+
+Please review the attached invoice and process the payment today.
+Failure to complete the transfer may cause service interruption.
+
+Payment portal: http://192.168.1.50/invoice-review
+
+--invoice-boundary
+Content-Type: application/zip; name="invoice_may_2026.zip"
+Content-Disposition: attachment; filename="invoice_may_2026.zip"
+
+Demo content
+--invoice-boundary--

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="PhishGuard AI icon">
+  <rect width="128" height="128" rx="32" fill="#08111f"/>
+  <path d="M26 38h76v52H26z" fill="#45e6b0" opacity="0.95"/>
+  <path d="M26 38l38 31 38-31" fill="none" stroke="#08111f" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M64 76c12-13 29-13 42 0-13 15-30 15-42 0z" fill="#08111f" opacity="0.96"/>
+  <circle cx="88" cy="76" r="5" fill="#45e6b0"/>
+</svg>

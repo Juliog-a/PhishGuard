@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Privacy-first phishing email analyzer for SOC triage. Upload .eml files or paste email details and receive a risk score, evidence, MITRE mapping, and recommended actions." />
+  <title>PhishGuard AI | Email Risk Analyzer</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="hero">
+    <nav class="nav" aria-label="Main navigation">
+      <a class="brand" href="#top" aria-label="PhishGuard AI home">
+        <span class="brand-mark" aria-hidden="true">PG</span>
+        <span>PhishGuard AI</span>
+      </a>
+      <div class="nav-links">
+        <a href="#analyzer">Analyzer</a>
+        <a href="#features">Features</a>
+        <a href="#about">About</a>
+      </div>
+    </nav>
+
+    <section id="top" class="hero-grid">
+      <div>
+        <p class="eyebrow">Privacy-first SOC triage demo</p>
+        <h1>Analyze suspicious emails without uploading data to a server.</h1>
+        <p class="hero-copy">
+          Upload an <strong>.eml</strong> file or paste email details manually. The analyzer extracts indicators,
+          scores phishing risk, maps likely techniques, and generates investigation guidance.
+        </p>
+        <div class="hero-actions">
+          <a class="button primary" href="#analyzer">Start analysis</a>
+          <button class="button ghost" id="loadSampleBtn" type="button">Load sample</button>
+        </div>
+        <div class="privacy-note" role="note">
+          <strong>Local processing:</strong> files are parsed in your browser. No email content is sent anywhere.
+        </div>
+      </div>
+      <aside class="hero-card" aria-label="Project highlights">
+        <div class="metric">
+          <span class="metric-number">0</span>
+          <span class="metric-label">backend required</span>
+        </div>
+        <div class="metric">
+          <span class="metric-number">.eml</span>
+          <span class="metric-label">upload support</span>
+        </div>
+        <div class="metric">
+          <span class="metric-number">MITRE</span>
+          <span class="metric-label">SOC-style output</span>
+        </div>
+      </aside>
+    </section>
+  </header>
+
+  <main>
+    <section id="analyzer" class="section analyzer-section">
+      <div class="section-heading">
+        <p class="eyebrow">Email analyzer</p>
+        <h2>Input suspicious email evidence</h2>
+        <p>Use either an uploaded .eml file or manual fields. Manual data overrides extracted values when filled.</p>
+      </div>
+
+      <div class="workspace">
+        <section class="panel input-panel" aria-labelledby="input-title">
+          <div class="panel-header">
+            <h3 id="input-title">Email input</h3>
+            <button class="text-button" id="clearBtn" type="button">Clear</button>
+          </div>
+
+          <label class="dropzone" for="emlFile" id="dropzone">
+            <input id="emlFile" name="emlFile" type="file" accept=".eml,message/rfc822,text/plain" />
+            <span class="drop-icon" aria-hidden="true">⇪</span>
+            <span><strong>Upload .eml</strong> or drag it here</span>
+            <small>Headers, body, URLs and attachment names are parsed locally.</small>
+          </label>
+
+          <div class="form-grid">
+            <label>
+              Subject
+              <input id="subject" type="text" placeholder="Urgent: verify your account" autocomplete="off" />
+            </label>
+            <label>
+              From
+              <input id="from" type="text" placeholder="Security Team <security@example.com>" autocomplete="off" />
+            </label>
+            <label>
+              Reply-To
+              <input id="replyTo" type="text" placeholder="support@example-support.com" autocomplete="off" />
+            </label>
+            <label>
+              Attachments
+              <input id="attachments" type="text" placeholder="invoice.html, payment.zip, report.pdf" autocomplete="off" />
+            </label>
+          </div>
+
+          <label class="full-width">
+            Email body / visible text
+            <textarea id="body" rows="12" placeholder="Paste the message body, URLs, instructions, signatures or any suspicious text here."></textarea>
+          </label>
+
+          <details class="advanced-block">
+            <summary>Advanced headers</summary>
+            <label>
+              Raw headers or Authentication-Results
+              <textarea id="rawHeaders" rows="6" placeholder="Authentication-Results: spf=fail dkim=none dmarc=fail..."></textarea>
+            </label>
+          </details>
+
+          <button class="button primary full" id="analyzeBtn" type="button">Analyze email</button>
+        </section>
+
+        <section class="panel result-panel" aria-labelledby="result-title" aria-live="polite">
+          <div class="panel-header">
+            <h3 id="result-title">Analysis result</h3>
+            <span class="status-pill" id="statusPill">Waiting for input</span>
+          </div>
+
+          <div id="emptyState" class="empty-state">
+            <div class="empty-icon" aria-hidden="true">◇</div>
+            <p>Upload an email or paste details, then run the analysis.</p>
+          </div>
+
+          <div id="results" class="results hidden">
+            <div class="score-card" id="scoreCard">
+              <div>
+                <p class="score-label">Risk score</p>
+                <p class="score-value"><span id="scoreValue">0</span><span>/100</span></p>
+              </div>
+              <div>
+                <p class="score-label">Classification</p>
+                <p class="score-class" id="scoreClass">Low</p>
+              </div>
+            </div>
+
+            <div class="summary-box">
+              <h4>Executive summary</h4>
+              <p id="summaryText"></p>
+            </div>
+
+            <div class="tabs" role="tablist" aria-label="Result tabs">
+              <button class="tab active" data-tab="evidence" type="button">Evidence</button>
+              <button class="tab" data-tab="indicators" type="button">Indicators</button>
+              <button class="tab" data-tab="soc" type="button">SOC actions</button>
+              <button class="tab" data-tab="ai" type="button">AI prompt</button>
+            </div>
+
+            <section class="tab-panel" id="tab-evidence">
+              <h4>Risk evidence</h4>
+              <ul class="evidence-list" id="evidenceList"></ul>
+            </section>
+
+            <section class="tab-panel hidden" id="tab-indicators">
+              <h4>Extracted indicators</h4>
+              <div id="indicatorTables"></div>
+            </section>
+
+            <section class="tab-panel hidden" id="tab-soc">
+              <h4>Recommended SOC actions</h4>
+              <ol class="action-list" id="actionList"></ol>
+              <h4>Likely MITRE ATT&CK mapping</h4>
+              <div class="mitre-list" id="mitreList"></div>
+            </section>
+
+            <section class="tab-panel hidden" id="tab-ai">
+              <h4>AI enrichment prompt</h4>
+              <p class="muted">Copy this prompt into your preferred AI assistant for human-reviewed enrichment. Do not paste real confidential data into public tools.</p>
+              <textarea id="aiPrompt" rows="10" readonly></textarea>
+              <button class="button secondary" id="copyPromptBtn" type="button">Copy prompt</button>
+            </section>
+
+            <div class="export-actions">
+              <button class="button secondary" id="downloadJsonBtn" type="button">Download JSON</button>
+              <button class="button secondary" id="downloadMdBtn" type="button">Download Markdown</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section id="features" class="section cards-section">
+      <div class="section-heading">
+        <p class="eyebrow">What it checks</p>
+        <h2>Signals useful for junior SOC triage</h2>
+      </div>
+      <div class="cards">
+        <article class="info-card">
+          <h3>Header authentication</h3>
+          <p>Flags SPF, DKIM and DMARC failures when present in the .eml headers.</p>
+        </article>
+        <article class="info-card">
+          <h3>URL risk</h3>
+          <p>Detects shorteners, IP-based URLs, punycode domains, suspicious TLDs and excessive subdomains.</p>
+        </article>
+        <article class="info-card">
+          <h3>Attachment risk</h3>
+          <p>Highlights executable, script, macro-enabled and HTML attachments commonly abused in phishing.</p>
+        </article>
+        <article class="info-card">
+          <h3>Social engineering</h3>
+          <p>Scores urgency, credential-harvesting language, payment pressure and impersonation patterns.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="about" class="section about-section">
+      <div class="about-grid">
+        <div>
+          <p class="eyebrow">Portfolio-ready</p>
+          <h2>Built for GitHub Pages</h2>
+          <p>
+            This project is intentionally static: no backend, no database and no secrets in the browser.
+            It is designed as a cybersecurity portfolio project, not as a production-grade secure email gateway.
+          </p>
+        </div>
+        <div class="code-card">
+          <pre><code>HTML · CSS · JavaScript
+EML parsing · IOC extraction
+Risk scoring · MITRE mapping
+Markdown / JSON export</code></pre>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>PhishGuard AI — educational SOC triage project.</p>
+    <p>Do not rely on this tool as the only source for incident response decisions.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
