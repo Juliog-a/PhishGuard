@@ -1,6 +1,8 @@
 # PhishGuard AI — Phishing Email Analyzer
 
-PhishGuard AI is a privacy-first phishing email analyzer built as a cybersecurity portfolio project. It runs entirely in the browser and can be deployed as a static website using GitHub Pages.
+PhishGuard AI is a privacy-first phishing email analyzer. It runs entirely in the browser and can be deployed as a static website using GitHub Pages.
+
+The public page is written as a real tool interface. Architecture, deployment and CV positioning are documented here in the README.
 
 ## What it does
 
@@ -8,7 +10,7 @@ PhishGuard AI is a privacy-first phishing email analyzer built as a cybersecurit
 - Supports manual input for subject, sender, Reply-To, body and attachment names.
 - Extracts URLs, domains, attachment names and authentication signals.
 - Scores phishing risk from 0 to 100.
-- Generates SOC-style triage output:
+- Generates analyst-ready triage output:
   - Executive summary
   - Risk evidence
   - Extracted indicators
@@ -16,10 +18,11 @@ PhishGuard AI is a privacy-first phishing email analyzer built as a cybersecurit
   - Recommended analyst actions
   - AI enrichment prompt
 - Exports results to JSON and Markdown.
+- Includes an English/Spanish language switch in the interface.
 
-## Why this project exists
+## Why this project is useful
 
-This project is designed to support a cybersecurity CV/portfolio by showing practical knowledge of:
+This project demonstrates practical knowledge of:
 
 - phishing triage;
 - email header analysis;
@@ -27,7 +30,7 @@ This project is designed to support a cybersecurity CV/portfolio by showing prac
 - risk scoring;
 - MITRE ATT&CK mapping;
 - browser-based secure-by-design tooling;
-- SOC analyst workflows.
+- email triage and incident-response documentation workflows.
 
 ## Live deployment with GitHub Pages
 
@@ -68,13 +71,13 @@ http://localhost:8000
 ## Example CV bullet
 
 ```text
-Built PhishGuard AI, a browser-based phishing email analyzer that parses .eml files, extracts IOCs, scores phishing risk, maps likely MITRE ATT&CK techniques, and generates SOC-style investigation guidance without sending email data to a backend.
+Built PhishGuard AI, a browser-based phishing email analyzer that parses .eml files, extracts IOCs, scores phishing risk, maps likely MITRE ATT&CK techniques, and generates analyst-ready investigation guidance without sending email data to a backend.
 ```
 
 ## Example LinkedIn/GitHub description
 
 ```text
-PhishGuard AI is a privacy-first phishing triage tool for SOC workflows. It analyzes suspicious emails locally in the browser, extracts URLs and attachment indicators, evaluates sender-authentication signals, produces a phishing risk score, and exports a structured analyst report.
+PhishGuard AI is a privacy-first phishing email triage tool. It analyzes suspicious emails locally in the browser, extracts URLs and attachment indicators, evaluates sender-authentication signals, produces a phishing risk score, and exports a structured analyst report.
 ```
 
 ## Technical design
@@ -97,7 +100,7 @@ The analyzer uses deterministic heuristics rather than a hosted LLM. This is del
 | URL risk | shorteners, IP-based URLs, punycode, suspicious TLDs, excessive subdomains |
 | Attachment risk | executable, script, ISO, HTML, compressed and macro-enabled files |
 | Social engineering | urgency, credential prompts, payment pressure, impersonation language |
-| SOC output | recommended actions, MITRE mapping, Markdown/JSON export |
+| Analyst output | recommended actions, MITRE mapping, Markdown/JSON export |
 
 ## Limitations
 

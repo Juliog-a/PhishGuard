@@ -54,8 +54,32 @@ button, input, textarea { font: inherit; }
   color: #06111f;
   box-shadow: 0 12px 30px rgba(69, 230, 176, 0.25);
 }
+.nav-right { display: flex; align-items: center; gap: 22px; }
 .nav-links { display: flex; gap: 24px; color: var(--muted); font-weight: 600; }
 .nav-links a:hover { color: var(--text); }
+.lang-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.035);
+  border-radius: 0;
+  padding: 10px 13px;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  font-weight: 900;
+}
+.lang-button {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  padding: 0;
+}
+.lang-button.active,
+.lang-button:hover { color: var(--text); }
 
 .hero-grid {
   display: grid;
@@ -261,7 +285,7 @@ th { color: var(--text); font-size: 0.8rem; text-transform: uppercase; letter-sp
 .muted { color: var(--muted); }
 .export-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
 
-.cards-section, .about-section { max-width: 1360px; margin: 0 auto; }
+.cards-section { max-width: 1360px; margin: 0 auto; }
 .cards {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -310,6 +334,7 @@ th { color: var(--text); font-size: 0.8rem; text-transform: uppercase; letter-sp
 }
 @media (max-width: 680px) {
   .nav { align-items: flex-start; gap: 16px; }
+  .nav-right { width: 100%; justify-content: space-between; }
   .nav-links { display: none; }
   .form-grid, .score-card, .cards { grid-template-columns: 1fr; }
   .panel { padding: 18px; }

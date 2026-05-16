@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Privacy-first phishing email analyzer for SOC triage. Upload .eml files or paste email details and receive a risk score, evidence, MITRE mapping, and recommended actions." />
+  <meta name="description" content="PhishGuard AI analyzes suspicious emails, extracts IOCs, scores phishing risk, checks authentication evidence and exports analyst-ready reports." />
   <title>PhishGuard AI | Email Risk Analyzer</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="styles.css" />
@@ -15,41 +15,47 @@
         <span class="brand-mark" aria-hidden="true">PG</span>
         <span>PhishGuard AI</span>
       </a>
-      <div class="nav-links">
-        <a href="#analyzer">Analyzer</a>
-        <a href="#features">Features</a>
-        <a href="#about">About</a>
+      <div class="nav-right">
+        <div class="nav-links">
+          <a href="#analyzer" data-i18n="nav.analyzer">Analyzer</a>
+          <a href="#features" data-i18n="nav.features">Features</a>
+        </div>
+        <div class="lang-switch" role="group" aria-label="Language switch">
+          <button class="lang-button active" type="button" data-lang="en" aria-label="Switch to English">EN</button>
+          <span aria-hidden="true">/</span>
+          <button class="lang-button" type="button" data-lang="es" aria-label="Cambiar a español">ES</button>
+        </div>
       </div>
     </nav>
 
     <section id="top" class="hero-grid">
       <div>
-        <p class="eyebrow">Privacy-first SOC triage demo</p>
-        <h1>Analyze suspicious emails without uploading data to a server.</h1>
-        <p class="hero-copy">
-          Upload an <strong>.eml</strong> file or paste email details manually. The analyzer extracts indicators,
-          scores phishing risk, maps likely techniques, and generates investigation guidance.
+        <p class="eyebrow" data-i18n="hero.eyebrow">Email threat analyzer</p>
+        <h1 data-i18n="hero.title">Detect suspicious signals in emails before opening links or attachments.</h1>
+        <p class="hero-copy" data-i18n="hero.copy">
+          Upload an .eml file or paste email details manually. The analyzer extracts IOCs, checks sender-authentication evidence, scores phishing risk and generates a structured report.
         </p>
         <div class="hero-actions">
-          <a class="button primary" href="#analyzer">Start analysis</a>
-          <button class="button ghost" id="loadSampleBtn" type="button">Load sample</button>
+          <a class="button primary" href="#analyzer" data-i18n="hero.start">Start analysis</a>
+          <button class="button ghost" id="loadSampleBtn" type="button" data-i18n="hero.sample">Load sample</button>
         </div>
         <div class="privacy-note" role="note">
-          <strong>Local processing:</strong> files are parsed in your browser. No email content is sent anywhere.
+          <strong data-i18n="hero.noteStrong">Privacy note:</strong>
+          <span data-i18n="hero.note">the analysis runs in your browser. Do not use real confidential emails in public demonstrations.</span>
         </div>
       </div>
-      <aside class="hero-card" aria-label="Project highlights">
-        <div class="metric">
-          <span class="metric-number">0</span>
-          <span class="metric-label">backend required</span>
-        </div>
+      <aside class="hero-card" aria-label="Tool highlights">
         <div class="metric">
           <span class="metric-number">.eml</span>
-          <span class="metric-label">upload support</span>
+          <span class="metric-label" data-i18n="metric.eml">email parsing</span>
         </div>
         <div class="metric">
-          <span class="metric-number">MITRE</span>
-          <span class="metric-label">SOC-style output</span>
+          <span class="metric-number">IOC</span>
+          <span class="metric-label" data-i18n="metric.ioc">indicator extraction</span>
+        </div>
+        <div class="metric">
+          <span class="metric-number">0-100</span>
+          <span class="metric-label" data-i18n="metric.score">risk score</span>
         </div>
       </aside>
     </section>
@@ -58,122 +64,122 @@
   <main>
     <section id="analyzer" class="section analyzer-section">
       <div class="section-heading">
-        <p class="eyebrow">Email analyzer</p>
-        <h2>Input suspicious email evidence</h2>
-        <p>Use either an uploaded .eml file or manual fields. Manual data overrides extracted values when filled.</p>
+        <p class="eyebrow" data-i18n="analyzer.eyebrow">Email analyzer</p>
+        <h2 data-i18n="analyzer.title">Input suspicious email evidence</h2>
+        <p data-i18n="analyzer.copy">Use either an uploaded .eml file or manual fields. Manual data overrides extracted values when filled.</p>
       </div>
 
       <div class="workspace">
         <section class="panel input-panel" aria-labelledby="input-title">
           <div class="panel-header">
-            <h3 id="input-title">Email input</h3>
-            <button class="text-button" id="clearBtn" type="button">Clear</button>
+            <h3 id="input-title" data-i18n="input.title">Email input</h3>
+            <button class="text-button" id="clearBtn" type="button" data-i18n="input.clear">Clear</button>
           </div>
 
           <label class="dropzone" for="emlFile" id="dropzone">
             <input id="emlFile" name="emlFile" type="file" accept=".eml,message/rfc822,text/plain" />
             <span class="drop-icon" aria-hidden="true">⇪</span>
-            <span><strong>Upload .eml</strong> or drag it here</span>
-            <small>Headers, body, URLs and attachment names are parsed locally.</small>
+            <span><strong data-i18n="input.uploadStrong">Upload .eml</strong> <span data-i18n="input.uploadRest">or drag it here</span></span>
+            <small data-i18n="input.uploadSmall">Headers, body, URLs and attachment names are parsed locally.</small>
           </label>
 
           <div class="form-grid">
             <label>
-              Subject
-              <input id="subject" type="text" placeholder="Urgent: verify your account" autocomplete="off" />
+              <span data-i18n="field.subject">Subject</span>
+              <input id="subject" type="text" placeholder="Urgent: verify your account" data-i18n-placeholder="ph.subject" autocomplete="off" />
             </label>
             <label>
-              From
-              <input id="from" type="text" placeholder="Security Team <security@example.com>" autocomplete="off" />
+              <span data-i18n="field.from">From</span>
+              <input id="from" type="text" placeholder="Security Team <security@example.com>" data-i18n-placeholder="ph.from" autocomplete="off" />
             </label>
             <label>
-              Reply-To
+              <span>Reply-To</span>
               <input id="replyTo" type="text" placeholder="support@example-support.com" autocomplete="off" />
             </label>
             <label>
-              Attachments
-              <input id="attachments" type="text" placeholder="invoice.html, payment.zip, report.pdf" autocomplete="off" />
+              <span data-i18n="field.attachments">Attachments</span>
+              <input id="attachments" type="text" placeholder="invoice.html, payment.zip, report.pdf" data-i18n-placeholder="ph.attachments" autocomplete="off" />
             </label>
           </div>
 
           <label class="full-width">
-            Email body / visible text
-            <textarea id="body" rows="12" placeholder="Paste the message body, URLs, instructions, signatures or any suspicious text here."></textarea>
+            <span data-i18n="field.body">Email body / visible text</span>
+            <textarea id="body" rows="12" placeholder="Paste the message body, URLs, instructions, signatures or any suspicious text here." data-i18n-placeholder="ph.body"></textarea>
           </label>
 
           <details class="advanced-block">
-            <summary>Advanced headers</summary>
+            <summary data-i18n="field.advanced">Advanced headers</summary>
             <label>
-              Raw headers or Authentication-Results
-              <textarea id="rawHeaders" rows="6" placeholder="Authentication-Results: spf=fail dkim=none dmarc=fail..."></textarea>
+              <span data-i18n="field.rawHeaders">Raw headers or Authentication-Results</span>
+              <textarea id="rawHeaders" rows="6" placeholder="Authentication-Results: spf=fail dkim=none dmarc=fail..." data-i18n-placeholder="ph.rawHeaders"></textarea>
             </label>
           </details>
 
-          <button class="button primary full" id="analyzeBtn" type="button">Analyze email</button>
+          <button class="button primary full" id="analyzeBtn" type="button" data-i18n="input.analyze">Analyze email</button>
         </section>
 
         <section class="panel result-panel" aria-labelledby="result-title" aria-live="polite">
           <div class="panel-header">
-            <h3 id="result-title">Analysis result</h3>
-            <span class="status-pill" id="statusPill">Waiting for input</span>
+            <h3 id="result-title" data-i18n="result.title">Analysis result</h3>
+            <span class="status-pill" id="statusPill" data-i18n="status.waiting">Waiting for input</span>
           </div>
 
           <div id="emptyState" class="empty-state">
             <div class="empty-icon" aria-hidden="true">◇</div>
-            <p>Upload an email or paste details, then run the analysis.</p>
+            <p data-i18n="empty.text">Upload an email or paste details, then run the analysis.</p>
           </div>
 
           <div id="results" class="results hidden">
             <div class="score-card" id="scoreCard">
               <div>
-                <p class="score-label">Risk score</p>
+                <p class="score-label" data-i18n="score.label">Risk score</p>
                 <p class="score-value"><span id="scoreValue">0</span><span>/100</span></p>
               </div>
               <div>
-                <p class="score-label">Classification</p>
+                <p class="score-label" data-i18n="score.classification">Classification</p>
                 <p class="score-class" id="scoreClass">Low</p>
               </div>
             </div>
 
             <div class="summary-box">
-              <h4>Executive summary</h4>
+              <h4 data-i18n="summary.title">Executive summary</h4>
               <p id="summaryText"></p>
             </div>
 
             <div class="tabs" role="tablist" aria-label="Result tabs">
-              <button class="tab active" data-tab="evidence" type="button">Evidence</button>
-              <button class="tab" data-tab="indicators" type="button">Indicators</button>
-              <button class="tab" data-tab="soc" type="button">SOC actions</button>
-              <button class="tab" data-tab="ai" type="button">AI prompt</button>
+              <button class="tab active" data-tab="evidence" type="button" data-i18n="tab.evidence">Evidence</button>
+              <button class="tab" data-tab="indicators" type="button" data-i18n="tab.indicators">Indicators</button>
+              <button class="tab" data-tab="actions" type="button" data-i18n="tab.actions">Actions</button>
+              <button class="tab" data-tab="ai" type="button" data-i18n="tab.ai">AI prompt</button>
             </div>
 
             <section class="tab-panel" id="tab-evidence">
-              <h4>Risk evidence</h4>
+              <h4 data-i18n="evidence.title">Risk evidence</h4>
               <ul class="evidence-list" id="evidenceList"></ul>
             </section>
 
             <section class="tab-panel hidden" id="tab-indicators">
-              <h4>Extracted indicators</h4>
+              <h4 data-i18n="indicators.title">Extracted indicators</h4>
               <div id="indicatorTables"></div>
             </section>
 
-            <section class="tab-panel hidden" id="tab-soc">
-              <h4>Recommended SOC actions</h4>
+            <section class="tab-panel hidden" id="tab-actions">
+              <h4 data-i18n="actions.title">Recommended actions</h4>
               <ol class="action-list" id="actionList"></ol>
-              <h4>Likely MITRE ATT&CK mapping</h4>
+              <h4 data-i18n="mitre.title">Likely MITRE ATT&CK mapping</h4>
               <div class="mitre-list" id="mitreList"></div>
             </section>
 
             <section class="tab-panel hidden" id="tab-ai">
-              <h4>AI enrichment prompt</h4>
-              <p class="muted">Copy this prompt into your preferred AI assistant for human-reviewed enrichment. Do not paste real confidential data into public tools.</p>
+              <h4 data-i18n="ai.title">AI enrichment prompt</h4>
+              <p class="muted" data-i18n="ai.copy">Copy this prompt into your preferred AI assistant for human-reviewed enrichment. Do not paste real confidential data into public tools.</p>
               <textarea id="aiPrompt" rows="10" readonly></textarea>
-              <button class="button secondary" id="copyPromptBtn" type="button">Copy prompt</button>
+              <button class="button secondary" id="copyPromptBtn" type="button" data-i18n="ai.copyButton">Copy prompt</button>
             </section>
 
             <div class="export-actions">
-              <button class="button secondary" id="downloadJsonBtn" type="button">Download JSON</button>
-              <button class="button secondary" id="downloadMdBtn" type="button">Download Markdown</button>
+              <button class="button secondary" id="downloadJsonBtn" type="button" data-i18n="export.json">Download JSON</button>
+              <button class="button secondary" id="downloadMdBtn" type="button" data-i18n="export.md">Download Markdown</button>
             </div>
           </div>
         </section>
@@ -182,52 +188,33 @@
 
     <section id="features" class="section cards-section">
       <div class="section-heading">
-        <p class="eyebrow">What it checks</p>
-        <h2>Signals useful for junior SOC triage</h2>
+        <p class="eyebrow" data-i18n="features.eyebrow">What it checks</p>
+        <h2 data-i18n="features.title">Suspicious signals and IOCs</h2>
       </div>
       <div class="cards">
         <article class="info-card">
-          <h3>Header authentication</h3>
-          <p>Flags SPF, DKIM and DMARC failures when present in the .eml headers.</p>
+          <h3 data-i18n="card.auth.title">Header authentication</h3>
+          <p data-i18n="card.auth.copy">Flags SPF, DKIM and DMARC failures when present in the .eml headers.</p>
         </article>
         <article class="info-card">
-          <h3>URL risk</h3>
-          <p>Detects shorteners, IP-based URLs, punycode domains, suspicious TLDs and excessive subdomains.</p>
+          <h3 data-i18n="card.url.title">URL risk</h3>
+          <p data-i18n="card.url.copy">Detects shorteners, IP-based URLs, punycode domains, suspicious TLDs and excessive subdomains.</p>
         </article>
         <article class="info-card">
-          <h3>Attachment risk</h3>
-          <p>Highlights executable, script, macro-enabled and HTML attachments commonly abused in phishing.</p>
+          <h3 data-i18n="card.attach.title">Attachment risk</h3>
+          <p data-i18n="card.attach.copy">Highlights executable, script, macro-enabled and HTML attachments commonly abused in phishing.</p>
         </article>
         <article class="info-card">
-          <h3>Social engineering</h3>
-          <p>Scores urgency, credential-harvesting language, payment pressure and impersonation patterns.</p>
+          <h3 data-i18n="card.social.title">Social engineering</h3>
+          <p data-i18n="card.social.copy">Scores urgency, credential-harvesting language, payment pressure and impersonation patterns.</p>
         </article>
-      </div>
-    </section>
-
-    <section id="about" class="section about-section">
-      <div class="about-grid">
-        <div>
-          <p class="eyebrow">Portfolio-ready</p>
-          <h2>Built for GitHub Pages</h2>
-          <p>
-            This project is intentionally static: no backend, no database and no secrets in the browser.
-            It is designed as a cybersecurity portfolio project, not as a production-grade secure email gateway.
-          </p>
-        </div>
-        <div class="code-card">
-          <pre><code>HTML · CSS · JavaScript
-EML parsing · IOC extraction
-Risk scoring · MITRE mapping
-Markdown / JSON export</code></pre>
-        </div>
       </div>
     </section>
   </main>
 
   <footer class="footer">
-    <p>PhishGuard AI — educational SOC triage project.</p>
-    <p>Do not rely on this tool as the only source for incident response decisions.</p>
+    <p data-i18n="footer.left">PhishGuard AI — phishing email risk analyzer.</p>
+    <p data-i18n="footer.right">Use this tool as decision support, not as the only source for response decisions.</p>
   </footer>
 
   <script src="app.js"></script>
